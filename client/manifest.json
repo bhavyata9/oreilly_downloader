@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "Orreilly Downloader",
+    "version": "0.0.1",
+    "permissions": [
+      "activeTab",
+      "alarms",
+      "tabs",
+      "webNavigation",
+      "notifications",
+      "*://*/"
+    ],
+    "content_scripts": [
+      {
+        "matches": [
+          "https://learning.oreilly.com/library/view/*"
+        ],
+        "css": [
+        ],
+        "js": [
+          "content/main.js"
+        ]
+      }
+    ]
+  }
