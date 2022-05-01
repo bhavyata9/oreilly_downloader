@@ -9,3 +9,7 @@ function clickStartButton() {
 function getTitle() {
     return sel("#main > section > article > section > h2").innerHTML;
 }
+
+function getNextButton() {
+    return sel("#main > section > div > nav > section > div.nextContainer--DE38N > a");
+}
