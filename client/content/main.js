@@ -1,5 +1,6 @@
 function oreillyDownloaderMain() {
     var title;
+    let loadingMs = 2000;
 
     function sel(selector) {
         return document.querySelector(selector);
@@ -10,7 +11,7 @@ function oreillyDownloaderMain() {
     }
 
     function clickStartButton() {
-        return getClickStartButton.click();
+        return getClickStartButton().click();
     }
 
     function getTitle() {
@@ -27,21 +28,37 @@ function oreillyDownloaderMain() {
 
     async function singleStart() {
         title = getTitle();
-        if (title === undefined) {
+        if (!title) {
             alsert("No title");
         }
 
         clickStartButton();
-        sleep(1000);
+        await sleep(loadingMs);
+        await readToPrint();
+    }
 
-        while (getNextButton() !== undefined) {
+    async function readToPrint() {
+        while (getNextButton()) {
+            window.print();
             getNextButton().click();
-            sleep(1000);
+            await sleep(loadingMs);
         }
+    }
+
+    function hotkey(func, pred) {
+        document.addEventListener("keydown", function(event) {
+            if (pred(event)) {
+                func();
+            }
+        });        
     }
 
     function main() {
         console.log("Oreilly Downloader Script Injected");
+        console.log("ctrl+alt+s: start from the book page");
+        console.log("ctrl+alt+p: start from the section page");
+        hotkey(singleStart, event => event.key === "s" && event.altKey && event.ctrlKey);        
+        hotkey(readToPrint, event => event.key === "p" && event.altKey && event.ctrlKey);
     }
 
     main();

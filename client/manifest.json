@@ -10,8 +10,10 @@
       "notifications",
       "clipboardRead",
       "clipboardWrite",
-      "commands"
+      "commands",
+      "storage"
     ],
+    "options_page": "options/main.html",
     "content_scripts": [
       {
         "matches": [
