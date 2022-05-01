@@ -32,6 +32,8 @@ function oreillyDownloaderMain() {
             alsert("No title");
         }
 
+        console.log("Going to print ${title}");
+
         clickStartButton();
         await sleep(loadingMs);
         await readToPrint();
