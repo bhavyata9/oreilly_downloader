@@ -9,7 +9,8 @@
       "webNavigation",
       "notifications",
       "clipboardRead",
-      "clipboardWrite"
+      "clipboardWrite",
+      "commands"
     ],
     "content_scripts": [
       {
