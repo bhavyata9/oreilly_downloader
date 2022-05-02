@@ -4,6 +4,7 @@ import http.server
 import json
 import os
 import socketserver
+import time
 
 flags_parser = argparse.ArgumentParser()
 flags_parser.add_argument('--port', 
@@ -58,7 +59,7 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
         self.wfile.write(str.encode(json.dumps(obj)))
 
     def _create_folder(self, payload):
-        folder_path = payload["folder"]
+        folder_path = payload["folderPath"]
         if not os.path.exists(folder_path):
             os.mkdir(folder_path)
             self._write({
@@ -70,15 +71,45 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
             })
     
     def _print_page(self, payload):
-        file_path = payload["file"]
+        folder_path = payload["folderPath"]
+        file_name = payload["fileName"]
+        full_path = payload["fullPath"]
         
-        ahk.key_down('Esc')
-        ahk.key_up('Esc')
+        time.sleep(1)
+        if os.path.exists(full_path):
+            ahk.send("{Esc}")
+
+            self._write({
+                "exists" : full_path
+            })
+            return
+        
+        ahk.send("{Enter}") # save from chrome print preview
+
+        time.sleep(1)
+        win = ahk.find_window(title = b'\xe5\x8f\xa6\xe5\xad\x98\xe4\xb8\xba') # 另存为
+
+        while win == None:
+            print("Can not find SaveAs window, sleep 1s, for %s" % file_name)
+            time.sleep(1)
+            win = ahk.find_window(title = b'\xe5\x8f\xa6\xe5\xad\x98\xe4\xb8\xba') # 另存为
+
+        win.send(file_name)
+
+        (x, y) = win.position
+        ahk.mouse_move(x + 180, y + 65) # closer to address line
+        ahk.click()
+
+        time.sleep(0.5)
+        ahk.send(folder_path)
+        ahk.send("{Enter}")
+
+        ahk.send("!s") # Alt+s again to really save
 
         self._write({
-            "exists" : file_path
+            "saved" : full_path
         })
-
+        return
 
 
 def run(server_class=http.server.HTTPServer, handler_class=HandleRequests):

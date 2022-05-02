@@ -46,19 +46,21 @@ async function oreillyDownloaderMain() {
 
         var no = 0;
 
-//        while (getNextButton()) {
+        while (getNextButton()) {
             let pageName = getPage();
             let prefix = `${no++}`.padStart(4, "0")
-            let fileName = `${folderPath}\\${prefix}-${pageName}`
+            let fileName = `${prefix}-${pageName}`
 
             ord_log(`Printing ${pageName} as ${fileName}...`);
 
-            let rpc = ord_printPage(opts, fileName);
+            let rpc = ord_printPage(opts, folderPath, fileName);
+            await sleep(500)
             window.print();
+            await sleep(500)
             await rpc;
             getNextButton().click();
             await sleep(loadingMs);
-//        }
+        }
     }
 
     async function startFromCoverPage() {

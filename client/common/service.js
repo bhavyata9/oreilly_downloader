@@ -33,17 +33,19 @@ async function ord_createFolder(opts, folderPath) {
     return ord_xhrToPromise(xhr, {
         method: "CreateFolder",
         payload: {
-            folder: folderPath,
+            folderPath: folderPath,
         },
     });
 }
 
-async function ord_printPage(opts, filePath) {
+async function ord_printPage(opts, folderPath, fileName) {
     let xhr = ord_xhr(opts);
     return ord_xhrToPromise(xhr, {
         method: "PrintPage",
         payload: {
-            file: filePath,
+            folderPath: folderPath, 
+            fileName: fileName,
+            fullPath: `${folderPath}\\${fileName}`,
         },
     });
 }
