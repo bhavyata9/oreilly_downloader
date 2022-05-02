@@ -1,12 +1,26 @@
 function oreillyDownloaderMain() {
+    function elById(id) {
+        return document.getElementById(id);
+    }
+
+    function rootDirEl() {
+        return elById("root_dir_input");
+    }
+
+    function serverAddressEl() {
+        return elById("server_address_input");
+    }
+
     async function restoreOptions() {
         let ops = await ord_getOptions();
-        document.getElementById("root_dir_input").value = ops.rootDir;
+        rootDirEl().value = ops.rootDir;
+        serverAddressEl().value = ops.serverAddress;
     }
 
     async function saveOptions() {
         ord_setOptions({
-            rootDir: document.getElementById("root_dir_input").value,
+            rootDir: rootDirEl().value,
+            serverAddress: serverAddressEl().value,
         });
     }
 
