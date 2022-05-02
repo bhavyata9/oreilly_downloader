@@ -1,4 +1,4 @@
-import ahk
+from ahk import AHK
 import argparse
 import http.server
 import json
@@ -11,6 +11,8 @@ flags_parser.add_argument('--port',
                           default = 12345,
                           help = 'Port to start the server')
 flags = flags_parser.parse_args()
+
+ahk = AHK()
 
 class HandleRequests(http.server.BaseHTTPRequestHandler):
     def _set_headers(self):
@@ -44,6 +46,8 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
 
         if message["method"] == "CreateFolder":
             self._create_folder(message["payload"])
+        elif message["method"] == "PrintPage":
+            self._print_page(message["payload"])
         else:
             self._write({
                 "error" : "unknown method",
@@ -64,6 +68,17 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
             self._write({
                 "exists" : folder_path
             })
+    
+    def _print_page(self, payload):
+        file_path = payload["file"]
+        
+        ahk.key_down('Esc')
+        ahk.key_up('Esc')
+
+        self._write({
+            "exists" : file_path
+        })
+
 
 
 def run(server_class=http.server.HTTPServer, handler_class=HandleRequests):

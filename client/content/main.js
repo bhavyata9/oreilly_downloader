@@ -1,6 +1,7 @@
 async function oreillyDownloaderMain() {
     let loadingMs = 2000;
     let titleUrlReg = /learning.oreilly.com\/library\/view\/(.+)\/\d+\//
+    let pageUrlReg = /learning.oreilly.com\/library\/view\/.+\/\d+\/(.+)\.html/
     let opts = await ord_getOptions();
 
     function sel(selector) {
@@ -27,6 +28,10 @@ async function oreillyDownloaderMain() {
         return window.location.href.match(titleUrlReg)[1];
     }
 
+    function getPage() {
+        return window.location.href.match(pageUrlReg)[1];
+    }
+
     function sleep(ms) {
         return new Promise(r => setTimeout(r, ms));
     }
@@ -36,15 +41,24 @@ async function oreillyDownloaderMain() {
     }
 
     async function start(folder) {
-        await ord_createFolder(opts, bookFolderPath(folder));
+        let folderPath = bookFolderPath(folder);
+        await ord_createFolder(opts, folderPath);
 
-        /*
-        while (getNextButton()) {
+        var no = 0;
+
+//        while (getNextButton()) {
+            let pageName = getPage();
+            let prefix = `${no++}`.padStart(4, "0")
+            let fileName = `${folderPath}\\${prefix}-${pageName}`
+
+            ord_log(`Printing ${pageName} as ${fileName}...`);
+
+            let rpc = ord_printPage(opts, fileName);
             window.print();
+            await rpc;
             getNextButton().click();
             await sleep(loadingMs);
-        }
-        */
+//        }
     }
 
     async function startFromCoverPage() {
