@@ -1,6 +1,7 @@
-function oreillyDownloaderMain() {
-    var title;
+async function oreillyDownloaderMain() {
     let loadingMs = 2000;
+    let titleUrlReg = /learning.oreilly.com\/library\/view\/(.+)\/\d+\//
+    let opts = await ord_getOptions();
 
     function sel(selector) {
         return document.querySelector(selector);
@@ -22,29 +23,50 @@ function oreillyDownloaderMain() {
         return sel("#main > section > div > nav > section > div.nextContainer--DE38N > a");
     }
 
+    function getFolder() {
+        return window.location.href.match(titleUrlReg)[1];
+    }
+
     function sleep(ms) {
         return new Promise(r => setTimeout(r, ms));
     }
 
-    async function singleStart() {
-        title = getTitle();
-        if (!title) {
-            alsert("No title");
-        }
-
-        console.log("Going to print ${title}");
-
-        clickStartButton();
-        await sleep(loadingMs);
-        await readToPrint();
+    function bookFolderPath(folder) {
+        return `${opts.rootDir}\\${folder}`;
     }
 
-    async function readToPrint() {
+    async function start(folder) {
+        await ord_createFolder(opts, bookFolderPath(folder));
+
+        /*
         while (getNextButton()) {
             window.print();
             getNextButton().click();
             await sleep(loadingMs);
         }
+        */
+    }
+
+    async function startFromCoverPage() {
+        let title = getTitle();
+        let folder = getFolder();
+        if (!title) {
+            alsert("No title");
+        }
+
+        ord_log(`Going to print [${title}] and save into [${bookFolderPath(folder)}]`);
+
+        clickStartButton();
+        await sleep(loadingMs);
+        await start(folder);
+    }
+
+    async function manuallyStartFromSection() {
+        let folder = getFolder();
+
+        ord_log(`Going to print from the mid and save into [${bookFolderPath(folder)}]`);
+
+        start(folder);
     }
 
     function hotkey(func, pred) {
@@ -55,12 +77,12 @@ function oreillyDownloaderMain() {
         });        
     }
 
-    function main() {
-        console.log("Oreilly Downloader Script Injected");
-        console.log("ctrl+alt+s: start from the book page");
-        console.log("ctrl+alt+p: start from the section page");
-        hotkey(singleStart, event => event.key === "s" && event.altKey && event.ctrlKey);        
-        hotkey(readToPrint, event => event.key === "p" && event.altKey && event.ctrlKey);
+    async function main() {
+        ord_log("Oreilly Downloader Script Injected");
+        ord_log("ctrl+alt+s: start from the book page");
+        ord_log("ctrl+alt+p: start from the section page manually");
+        hotkey(startFromCoverPage, event => event.key === "s" && event.altKey && event.ctrlKey);        
+        hotkey(manuallyStartFromSection, event => event.key === "p" && event.altKey && event.ctrlKey);
     }
 
     main();

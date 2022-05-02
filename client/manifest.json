@@ -22,6 +22,9 @@
         "css": [
         ],
         "js": [
+          "common/options.js",
+          "common/logger.js",
+          "common/service.js",
           "content/main.js"
         ]
       }

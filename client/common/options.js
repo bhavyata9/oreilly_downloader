@@ -1,7 +1,7 @@
 async function ord_getOptions() {
     return chrome.storage.local.get({
         rootDir: "D:\\oreilly_books",
-        serverAddress: "127.0.0.1:12345",
+        serverAddress: "http://127.0.0.1:12345",
     });
 }
 

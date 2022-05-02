@@ -25,7 +25,7 @@ function oreillyDownloaderMain() {
     }
 
     function main() {
-        console.log("Oreilly Downloader Options");
+        ord_log("Oreilly Downloader Options");
         document.addEventListener('DOMContentLoaded', restoreOptions);
         document.getElementById('save_button').addEventListener('click', saveOptions);
     }

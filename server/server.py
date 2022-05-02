@@ -1,6 +1,8 @@
 import ahk
 import argparse
 import http.server
+import json
+import os
 import socketserver
 
 flags_parser = argparse.ArgumentParser()
@@ -14,7 +16,18 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Credentials', 'true')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header("Access-Control-Allow-Headers", "X-Requested-With, Content-type")
         self.end_headers()
+
+    def do_OPTIONS(self):
+        self.send_response(200, "ok")
+        self.send_header('Access-Control-Allow-Credentials', 'true')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header("Access-Control-Allow-Headers", "X-Requested-With, Content-type")    
+        self.end_headers()    
 
     def do_GET(self):
         self._set_headers()
@@ -22,9 +35,36 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
         
     def do_POST(self):
         self._set_headers()
-        content_len = int(self.headers.getheader('content-length', 0))
+        content_len = int(self.headers.get('Content-Length'))
         post_body = self.rfile.read(content_len)
-        self.wfile.write(b'received post request:<br>{}'.format(post_body))
+
+        print('Get request: %s' % post_body)
+
+        message = json.loads(post_body)
+
+        if message["method"] == "CreateFolder":
+            self._create_folder(message["payload"])
+        else:
+            self._write({
+                "error" : "unknown method",
+                "body" : post_body
+            })
+
+    def _write(self, obj):
+        self.wfile.write(str.encode(json.dumps(obj)))
+
+    def _create_folder(self, payload):
+        folder_path = payload["folder"]
+        if not os.path.exists(folder_path):
+            os.mkdir(folder_path)
+            self._write({
+                "created" : folder_path
+            })
+        else:
+            self._write({
+                "exists" : folder_path
+            })
+
 
 def run(server_class=http.server.HTTPServer, handler_class=HandleRequests):
     server_address = ('', flags.port)
