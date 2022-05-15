@@ -2,19 +2,35 @@
 <html>
     <head>
         <title>O'Reilly Downloader Options</title>
+        <style>
+            body {
+                margin: 16px;
+            }
+
+            .config-panel {
+                margin-bottom: 16px;
+            }
+
+            .config-key {
+                margin-right: 16px;
+            }
+
+            .save-button {
+                margin-top: 16px;
+            }
+        </style>
     </head>
     <body>
-        <div>
-            <span>Root dir to save</span>
+        <div class="config-panel">
+            <span class="config-key">Root dir to save</span>
             <input id="root_dir_input" type="text">
         </div>
-        <div>
-            <span>Server address</span>
+        <div class="config-pannel">
+            <span class="config-key">Server address</span>
             <input id="server_address_input" type="text">
         </div>
 
-
-        <button id="save_button">Save</button>
+        <button id="save_button" class="save-button">Save</button>
 
         <script src="../common/logger.js"></script>
         <script src="../common/options.js"></script>

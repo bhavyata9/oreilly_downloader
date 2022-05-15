@@ -13,7 +13,16 @@
       "commands",
       "storage"
     ],
-    "options_page": "options/main.html",
+    "action": {
+      "default_popup": "popup/main.html"
+    },
+    "options_ui": {
+      "page": "options/main.html",
+      "open_in_tab": false
+    },
+    "background": {
+      "service_worker": "background/main.js"
+    },
     "content_scripts": [
       {
         "matches": [

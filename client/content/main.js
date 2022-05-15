@@ -75,6 +75,8 @@ async function oreillyDownloaderMain() {
         clickStartButton();
         await sleep(loadingMs);
         await start(folder);
+
+        ord_log(`Finished print [${title}]`);
     }
 
     async function manuallyStartFromSection() {
@@ -83,6 +85,8 @@ async function oreillyDownloaderMain() {
         ord_log(`Going to print from the mid and save into [${bookFolderPath(folder)}]`);
 
         start(folder);
+
+        ord_log(`Finished`);
     }
 
     function hotkey(func, pred) {
