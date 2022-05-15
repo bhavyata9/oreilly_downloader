@@ -5,6 +5,7 @@ import json
 import os
 import socketserver
 import time
+import shutil
 
 flags_parser = argparse.ArgumentParser()
 flags_parser.add_argument('--port', 
@@ -59,16 +60,17 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
         self.wfile.write(str.encode(json.dumps(obj)))
 
     def _create_folder(self, payload):
-        folder_path = payload["folderPath"]
-        if not os.path.exists(folder_path):
-            os.mkdir(folder_path)
-            self._write({
-                "created" : folder_path
-            })
-        else:
-            self._write({
-                "exists" : folder_path
-            })
+        folder_path = payload["folderPath"]        
+        exists = False
+        if os.path.exists(folder_path):
+            exists = True
+            shutil.rmtree(folder_path)
+
+        os.mkdir(folder_path)
+        self._write({
+            "created" : folder_path,
+            "deleteExist" : exists
+        })
     
     def _print_page(self, payload):
         folder_path = payload["folderPath"]

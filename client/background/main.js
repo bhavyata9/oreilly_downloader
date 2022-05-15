@@ -1,4 +1,5 @@
 importScripts("../common/logger.js");
+importScripts("../common/options.js");
 
 async function oreillyDownloaderMain() {
     async function main() {

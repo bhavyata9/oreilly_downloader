@@ -18,7 +18,7 @@
     },
     "options_ui": {
       "page": "options/main.html",
-      "open_in_tab": false
+      "open_in_tab": true
     },
     "background": {
       "service_worker": "background/main.js"

@@ -40,7 +40,7 @@ async function oreillyDownloaderMain() {
         return `${opts.rootDir}\\${folder}`;
     }
 
-    async function start(folder) {
+    async function start(folder, args) {
         let folderPath = bookFolderPath(folder);
         await ord_createFolder(opts, folderPath);
 
@@ -63,7 +63,7 @@ async function oreillyDownloaderMain() {
         }
     }
 
-    async function startFromCoverPage() {
+    async function startFromCoverPage(args = new PrintFromCoverArgs()) {
         let title = getTitle();
         let folder = getFolder();
         if (!title) {
@@ -74,17 +74,17 @@ async function oreillyDownloaderMain() {
 
         clickStartButton();
         await sleep(loadingMs);
-        await start(folder);
+        await start(folder, args);
 
         ord_log(`Finished print [${title}]`);
     }
 
-    async function manuallyStartFromSection() {
+    async function manuallyStartFromSection(args = new PrintFromThisPageArgs()) {
         let folder = getFolder();
 
         ord_log(`Going to print from the mid and save into [${bookFolderPath(folder)}]`);
 
-        start(folder);
+        start(folder, args);
 
         ord_log(`Finished`);
     }
@@ -103,11 +103,14 @@ async function oreillyDownloaderMain() {
         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
                 let commandFunc = commandMap[request.command];
-                if (commandFunc)
+                if (commandFunc) {
                     ord_log(`Received command: ${request.command}`);
-                    sleep(1000).then((any) => commandFunc());
+                    sleep(1000).then((any) => commandFunc(request));
                     sendResponse({scheduled: true});
+                } else {
+                    ord_log(`Unknown command: ${request.command}`);
                 }
+            }
           );
     }
 

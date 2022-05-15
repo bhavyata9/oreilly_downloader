@@ -8,7 +8,7 @@
             }
 
             .config-panel {
-                margin-bottom: 16px;
+                margin-bottom: 32px;
             }
 
             .config-key {
@@ -18,6 +18,27 @@
             .save-button {
                 margin-top: 16px;
             }
+
+            .task-list {
+                width: 100%;
+            }
+
+            table, th, td {
+                border: 1px solid grey;
+            }
+
+            table {
+                display: table;
+                width: 100%;                
+            }
+
+            tr {
+                width: 100%;
+            }
+
+            th, td {
+                width: 14%;
+            }
         </style>
     </head>
     <body>
@@ -25,13 +46,39 @@
             <span class="config-key">Root dir to save</span>
             <input id="root_dir_input" type="text">
         </div>
-        <div class="config-pannel">
+        <div class="config-panel">
             <span class="config-key">Server address</span>
             <input id="server_address_input" type="text">
         </div>
+        <div class="config-panel">
+            <div>
+                <span class="config-key">Add Tasks</span>
+            </div>
+            <textarea id="add_task_area"></textarea>      
+            <div>
+                <button id="add_task_button">Add</button>
+            </div>
+        </div>
+
+        <div class="task-list">
+            <div>Tasks</div>
+            <table id="task_table">
+                <tr class="task-header">
+                    <th>Id</th>
+                    <th>Cover URL</th>
+                    <th>Manual Start URL</th>
+                    <th>Save Location</th>
+                    <th>Started</th>
+                    <th>Finished</th>
+                    <th>Delete</th>
+                </tr>
+            </table>
+        </div>
 
         <button id="save_button" class="save-button">Save</button>
+        <button id="start_tasks" class="start-tasks">Start Tasks</button>
 
+        <script src="../common/constants.js"></script>
         <script src="../common/logger.js"></script>
         <script src="../common/options.js"></script>
         <script src="../common/utils.js"></script>
