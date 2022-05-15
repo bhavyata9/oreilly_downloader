@@ -31,9 +31,12 @@
         "css": [
         ],
         "js": [
+          "external/chrome-extension-async.js",
+          "common/constants.js",
           "common/options.js",
           "common/logger.js",
           "common/service.js",
+          "common/utils.js",
           "content/main.js"
         ]
       }

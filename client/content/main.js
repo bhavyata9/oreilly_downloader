@@ -1,7 +1,7 @@
 async function oreillyDownloaderMain() {
     let loadingMs = 2000;
-    let titleUrlReg = /learning.oreilly.com\/library\/view\/(.+)\/\d+\//
-    let pageUrlReg = /learning.oreilly.com\/library\/view\/.+\/\d+\/(.+)\.html/
+    let titleUrlReg = ord_titleUrlReg;
+    let pageUrlReg = ord_pageUrlReg;
     let opts = await ord_getOptions();
 
     function sel(selector) {
@@ -97,12 +97,32 @@ async function oreillyDownloaderMain() {
         });        
     }
 
+    let commandMap = {};
+
+    function listenCmd() {
+        chrome.runtime.onMessage.addListener(
+            function(request, sender, sendResponse) {
+                let commandFunc = commandMap[request.command];
+                if (commandFunc)
+                    ord_log(`Received command: ${request.command}`);
+                    sleep(1000).then((any) => commandFunc());
+                    sendResponse({scheduled: true});
+                }
+          );
+    }
+
     async function main() {
         ord_log("Oreilly Downloader Script Injected");
         ord_log("ctrl+alt+s: start from the book page");
         ord_log("ctrl+alt+p: start from the section page manually");
+        ord_log("Or click the chrome extension icon");
+
         hotkey(startFromCoverPage, event => event.key === "s" && event.altKey && event.ctrlKey);        
         hotkey(manuallyStartFromSection, event => event.key === "p" && event.altKey && event.ctrlKey);
+
+        commandMap[ord_cmd_printFromCover] = startFromCoverPage;
+        commandMap[ord_cmd_printFromThisPage] = manuallyStartFromSection;
+        listenCmd();
     }
 
     main();

@@ -13,19 +13,31 @@
                 margin-top: 8px;
                 margin-bottom: 8px;
             }
+
+            .function-item {
+                margin-top: 16px;
+            }
         </style>
     </head>
     <body>
-        <div>
-
+        <div class="function-panel">
+            <div id="print_from_cover_item" style="display: none;" class="function-item">
+                <button id="print_from_cover_button">Print from cover page</button>
+            </div>
+            <div id="print_from_this_page_item" style="display:none" class="function-item">
+                <button id="print_from_this_page_button">Print from this page</button>
+            </div>
         </div>
         <div class="split-line"></div>
         <div class="debug-panel">
             <span>Debug panel</span>
         </div>
 
+        <script src="../external/chrome-extension-async.js"></script>
+        <script src="../common/constants.js"></script>
         <script src="../common/logger.js"></script>
         <script src="../common/options.js"></script>
+        <script src="../common/utils.js"></script>
         <script src="main.js"></script>
     </body>
 </html>
