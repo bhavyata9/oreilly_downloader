@@ -37,6 +37,7 @@
           "common/logger.js",
           "common/service.js",
           "common/utils.js",
+          "common/communication.js",
           "content/main.js"
         ]
       }

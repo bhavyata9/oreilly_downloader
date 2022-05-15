@@ -17,20 +17,18 @@ function oreillyDownloaderMain() {
         }
     }
 
-    async function printFrom(cmd) {
+    async function printFrom(args) {
         let tab = await currentTab();
-        await chrome.tabs.sendMessage(tab.id, {
-            command: cmd,
-        });
+        await chrome.tabs.sendMessage(tab.id, args);
         window.close();
     }
 
     async function printFromCover() {
-        await printFrom(ord_cmd_printFromCover);
+        await printFrom(new PrintFromCoverArgs());
     }
 
     async function printFromThispage() {
-        await printFrom(ord_cmd_printFromThisPage);
+        await printFrom(new PrintFromThisPageArgs());
     }
 
     function main() {
