@@ -49,3 +49,11 @@ async function ord_printPage(opts, folderPath, fileName) {
         },
     });
 }
+
+async function ord_ping(opts) {
+  let xhr = ord_xhr(opts);
+  return ord_xhrToPromise(xhr, {
+    method: "Ping",
+    payload: {},
+  });
+}

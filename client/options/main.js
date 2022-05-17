@@ -16,6 +16,7 @@ function oreillyDownloaderMain() {
         rootDirEl().value = ops.rootDir;
         serverAddressEl().value = ops.serverAddress;
         renderTableWithTasks(ops.tasks);
+        updateRunTasks(ops.runTasks);
     }
 
     async function saveOptions() {        
@@ -71,6 +72,18 @@ function oreillyDownloaderMain() {
         renderTableWithTasks(ops.tasks);
     }
 
+    async function resetTask(id) {
+        let ops = await ord_getOptions();
+        let exist = ops.tasks[id];
+        let newTask = new Task(id);
+        newTask.coverUrl = exist.coverUrl;
+        newTask.startUrl = exist.startUrl;
+        ops.tasks[id] = newTask;
+        await ord_setOptions(ops);
+
+        renderTableWithTasks(ops.tasks);
+    }
+
     function renderTableWithTasks(tasks) {
         let table = ord_elById("task_table");
         let rows = table.querySelectorAll(".task-body");
@@ -86,14 +99,48 @@ function oreillyDownloaderMain() {
             tr.appendChild(td(task.folder));
             tr.appendChild(td(task.start));
             tr.appendChild(td(task.finish));
-            let button = document.createElement("button");
-            button.innerHTML = "Delete";
-            button.addEventListener('click', () => {
+            tr.appendChild(td(task.dryRun));
+            let deleteButton = document.createElement("button");
+            deleteButton.innerHTML = "Delete";
+            deleteButton.addEventListener('click', () => {
                 deleteTask(task.id);
             });
-            tr.appendChild(td(button));
+            let resetButton = document.createElement("button");
+            resetButton.innerHTML = "Reset";
+            resetButton.addEventListener('click', () => {
+                resetTask(task.id);
+            });
+            let div = document.createElement("div");
+            div.appendChild(resetButton);
+            div.appendChild(deleteButton);
+            tr.appendChild(td(div));
             table.appendChild(tr);
         }
+    }
+
+    function updateRunTasks(run) {
+        ord_elById('run_task_status').innerHTML = run ? "Running" : "Stop";
+    }
+
+    async function saveRunTasks(run) {
+        let ops = await ord_getOptions();
+        ops.runTasks = run;
+        await ord_setOptions(ops);
+
+        updateRunTasks(run);
+    }
+
+    function startTasks(dryRun = false) {
+        saveRunTasks(true);
+        let args = new RunTasksArgs();
+        if (dryRun) {
+            args.dryRun = true;
+        }
+        chrome.runtime.sendMessage(new RunTasksArgs());
+    }
+
+    function stopTasks() {
+        saveRunTasks(false);
     }
 
     function main() {
@@ -101,8 +148,10 @@ function oreillyDownloaderMain() {
         document.addEventListener('DOMContentLoaded', restoreOptions);
 
         ord_elById('add_task_button').addEventListener('click', addTasks);
-
         ord_elById('save_button').addEventListener('click', saveOptions);
+        ord_elById('start_tasks').addEventListener('click', () => startTasks(false));
+        ord_elById('dry_run_tasks').addEventListener('click', () => startTasks(true));  
+        ord_elById('stop_tasks').addEventListener('click', stopTasks);
     }
 
     main();

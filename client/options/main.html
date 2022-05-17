@@ -15,7 +15,7 @@
                 margin-right: 16px;
             }
 
-            .save-button {
+            .button {
                 margin-top: 16px;
             }
 
@@ -37,7 +37,11 @@
             }
 
             th, td {
-                width: 14%;
+                width: 12.5%;
+            }
+
+            .run-task-status {
+                margin-top: 32px;
             }
         </style>
     </head>
@@ -70,18 +74,28 @@
                     <th>Save Location</th>
                     <th>Started</th>
                     <th>Finished</th>
-                    <th>Delete</th>
+                    <th>Dry Run</th>
+                    <th>Action</th>
                 </tr>
             </table>
         </div>
 
-        <button id="save_button" class="save-button">Save</button>
-        <button id="start_tasks" class="start-tasks">Start Tasks</button>
+        <button id="save_button" class="button">Save</button>
+
+        <div class="run-task-status">
+            <span>Tasks status:</span>
+            <span id="run_task_status"></span>
+        </div>
+
+        <button id="start_tasks" class="button">Start Tasks</button>
+        <button id="dry_run_tasks" class="button">Dry Run Tasks</button>
+        <button id="stop_tasks" class="button">Stop Tasks</button>
 
         <script src="../common/constants.js"></script>
         <script src="../common/logger.js"></script>
         <script src="../common/options.js"></script>
         <script src="../common/utils.js"></script>
+        <script src="../common/communication.js"></script>
         <script src="main.js"></script>
     </body>
 </html>

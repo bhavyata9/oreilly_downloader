@@ -50,11 +50,18 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
             self._create_folder(message["payload"])
         elif message["method"] == "PrintPage":
             self._print_page(message["payload"])
+        elif message["method"] == "Ping":
+            self._ping(message["payload"])
         else:
             self._write({
                 "error" : "unknown method",
                 "body" : post_body
             })
+
+    def _ping(self, obj):
+        self._write({
+            "Pong": obj,
+        })
 
     def _write(self, obj):
         self.wfile.write(str.encode(json.dumps(obj)))

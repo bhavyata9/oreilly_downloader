@@ -3,6 +3,7 @@ async function ord_getOptions() {
         rootDir: "D:\\oreilly_books",
         serverAddress: "http://127.0.0.1:12345",
         tasks: {},
+        runTasks: false,
     });
 }
 
@@ -18,5 +19,6 @@ class Task {
         this.folder = null;
         this.start = false;
         this.finish = false;
+        this.dryRun = null;
     }
 }
